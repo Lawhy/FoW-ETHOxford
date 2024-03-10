@@ -1,2 +1,2 @@
-# ETHOxford
-Code for the ETHOxford hackathon.
+# Future of Work (ETHOxford)
+Code for the "Future of Work" project submitted to the ETHOxford hackathon.
