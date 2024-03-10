@@ -1,6 +1,13 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 import gradio as gr
 import json
+import hashlib
+from solders.keypair import Keypair  # type:ignore
+from solders.pubkey import Pubkey  # type:ignore
+from solana.rpc.api import Client
+from solders.instruction import Instruction, AccountMeta  # type:ignore
+from solders.system_program import TransferParams, transfer
+from solana.transaction import Transaction
 
 EXAMPLES = [
     "Project Description: Mystic Realms is an immersive, open-world RPG set in a fantastical universe where magic and technology coexist. The game invites players to explore the vast, enchanting world of Eldoria, a land filled with ancient mysteries, dynamic ecosystems, and a tapestry of cultures. Players assume the role of a customizable protagonist, who is a member of the Arcane Guild, tasked with investigating a series of mysterious events that threaten the balance of the world.",
@@ -122,13 +129,55 @@ class ReviewAgent:
         with open(transaction_database) as g:
             transactions = json.load(g)
             self.transaction = transactions[transaction_id]
+            
+    def hash(self, serialized):
+        hash_object = hashlib.sha256(serialized.encoder("utf-8"))
+        return hash_object.hexdigest()
+    
+    def review_transaction(self, review_hash):
+        
+        client = Client("http://127.0.0.1:8899")
+        program_id = Pubkey.from_string("GT1e65eGShubZ2fqQMPxq8nausRN8PsAwRXgWveAvuDc")
+        with open("/home/yuan/.config/solana/id.json") as f:
+            user_keypair = Keypair.from_bytes(json.load(f))  # replace with a real keypair
+        # Keypair.from_secret_key(base58.b58decode("YOUR_SECRET_KEY"))
+        reviews_account = Pubkey.from_string("D6ausUvqJd7upmRVkT9QYoapA55kx4c8TPxLytSA3qvg")
+        # Create the transaction instruction
+        instruction = Instruction(
+            accounts=[AccountMeta(user_keypair.pubkey(), True, False), AccountMeta(reviews_account, False, True)],
+            program_id=program_id,
+            data=review_hash,  # Your encoded instruction data
+        )
 
-    def interface(self):
+        # Create the transaction
+        transaction = Transaction(recent_blockhash=client.get_latest_blockhash().value.blockhash, fee_payer=user_keypair.pubkey())
+        transaction.add(instruction)
+
+        # Send the transaction
+        response = client.send_transaction(
+            transaction,
+            user_keypair,
+        )
+        return response
+
+
+
+    def interface(self, apply_blockchain_transactions: bool = False):
 
         def submit(*reviews: str):
             for i, freelancer_id in enumerate(self.transaction["freelancers"]):
                 review = reviews[i]
                 relevant_skills = list(set(self.freelancers[freelancer_id]["skills"]).intersection(self.transaction["skills"]))
+                
+                if apply_blockchain_transactions:
+                    serialized = review + "\t" + str(relevant_skills)
+                    hashed = self.hash(serialized)
+                    try:
+                        response = self.review_transaction(hashed)
+                        print(response)
+                    except:
+                        print("Transaction failed.")
+                
                 for skill in relevant_skills:
                     self.freelancers[freelancer_id]["reviews"].setdefault(self.company, {})
                     self.freelancers[freelancer_id]["reviews"][self.company].setdefault(skill, [])
