@@ -135,6 +135,7 @@ class ReviewAgent:
                     self.freelancers[freelancer_id]["reviews"][self.company][skill].append(review)
             with open(self.freelancer_database, "w+") as f:
                 json.dump(self.freelancers, f, indent = 4)
+            return "Review Submitted!"
 
         reviews = []
         for freelancer_id in self.transaction["freelancers"]:
@@ -142,6 +143,6 @@ class ReviewAgent:
             reviews.append(gr.Textbox(label=f"Review for {name} ({freelancer_id})"))
         feedback = gr.Textbox(label="Feedback", container=False)
         demo = gr.Interface(
-            fn=submit, inputs=reviews, outputs=feedback, title="Freelancer Review", allow_flagging="never"
+            fn=submit, inputs=reviews, outputs=feedback, title=f"Hi {self.company}, welcome to the Freelancer Review!", allow_flagging="never"
         )
         demo.launch(share=True)
