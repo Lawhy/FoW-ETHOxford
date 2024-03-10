@@ -6,8 +6,6 @@ EXAMPLES = [
     "Project Description: Mystic Realms is an immersive, open-world RPG set in a fantastical universe where magic and technology coexist. The game invites players to explore the vast, enchanting world of Eldoria, a land filled with ancient mysteries, dynamic ecosystems, and a tapestry of cultures. Players assume the role of a customizable protagonist, who is a member of the Arcane Guild, tasked with investigating a series of mysterious events that threaten the balance of the world.",
     "Project Description: Decentralized Art Gallery (DAG) is a cutting-edge Web3 application designed to revolutionize the art world by leveraging blockchain technology. DAG provides a platform for artists to showcase their digital artworks, ensuring authenticity, provenance, and ownership through non-fungible tokens (NFTs). Art enthusiasts can discover, purchase, and collect unique pieces of art directly from creators worldwide, fostering a direct artist-to-collector relationship.",
 ]
-# gaming: [['a1b2c3d4', 'e5f6g7h8']]
-# web3:
 
 
 class ChatAgent:
@@ -45,6 +43,7 @@ class ChatAgent:
         def match(msg: str):
             skills = self.parse(msg, max_new_tokens=64)
             parsed_skills = [x.strip() for x in skills.split("-")[1:]]
+            # print(parsed_skills)
             results = find_combinations(self.freelancers, parsed_skills)
             return skills, format_combinations(self.freelancers, results)
 
