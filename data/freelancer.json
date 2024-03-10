@@ -14,7 +14,15 @@
       "Level Design": 3,
       "UI Design": 2
     },
-    "review": "good pal",
+    "reviews": {
+      "SONY": {
+        "3D Modeling": ["Fast work, moderate quality.", "Very efficient."],
+        "Unity": ["Poor code optimization."]
+      },
+      "Amazon": {
+        "Game Design": ["No creativity", "Very efficient"]
+      }
+    },
     "expected_salary_per_day": 450
   },
   "e5f6g7h8": {
@@ -24,10 +32,17 @@
       "Sound Design": 3,
       "Music Composition": 3,
       "Unity": 1,
-      "Game Design": 2
+      "Game Design": 1
     },
-    "review": "good pal",
-    "expected_salary_per_day": 350
+    "reviews": {
+      "SONY": {
+        "Music Composition": ["Heart-touching melody."]
+      },
+      "Tencent": {
+        "Game Design": ["Too expensive."]
+      }
+    },
+    "expected_salary_per_day": 1350
   },
   "i9j0k1l2": {
     "name": "Sam Patel",
@@ -47,7 +62,14 @@
       "Hardhat": 2,
       "Web3": 3
     },
-    "review": "good pal",
+    "reviews": {
+      "Solana": {
+        "Web3.js": ["Mastery level.", "Not so efficient."]
+      },
+      "Near": {
+        "Web3.js": ["Mastery level.", "Not so efficient."]
+      }
+    },
     "expected_salary_per_day": 600
   },
   "m3n4o5p6": {
@@ -60,7 +82,7 @@
       "Web3.js": 2,
       "UI Design": 3
     },
-    "review": "good pal",
+    "reviews": {},
     "expected_salary_per_day": 400
   }
 }
